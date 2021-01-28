@@ -242,6 +242,11 @@
         fetch("http://127.0.0.1:8000/search/complex", requestOptions)
           .then((response) => response.json())
           .then((result) => {
+            try {
+              if (result.detail != undefined) alert(result.detail);
+            } catch (err) {
+              console.log(err);
+            }
             console.log(result.data.items);
             arr = result.data.items;
             arr.forEach((element) => {
