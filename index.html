@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <title>CodeHelp</title>
+  </head>
+  <body>
+    <main>
+      <image
+        src="logo1.png"
+        style="margin-left: auto; margin-right: auto; display: block"
+      ></image>
+      <br />
+      <section class="container">
+        <form id="searchform" class="row searchform">
+          <input
+            class="col"
+            id="searchQ"
+            type="text"
+            name="term"
+            placeholder="Enter Query"
+          />
+          <button class="col-1" id="searchButton" type="submit">Help!</button>
+        </form>
+      </section>
+      <br />
+      <section
+        class="container"
+        id="searchresultcontainer"
+        style="padding: 20px"
+      >
+        <div class="row" id="searchresult"></div>
+      </section>
+    </main>
+    <footer
+      class="bg-light text-center text-lg-start"
+      style="position: absolute; bottom: 0px"
+    >
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+        Clicke here for
+        <a class="text-dark" href="complex.html">Complex Queries</a>
+      </div>
+    </footer>
+    <script>
+      const myform = document.getElementById("searchform");
+      myform.addEventListener("submit", (e) => {
+        e.preventDefault();
+        data = new FormData(myform);
+        console.log(data.get("term"));
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("term", data.get("term"));
+
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: "follow",
+        };
+
+        fetch("http://127.0.0.1:8000/search/", requestOptions)
+          .then((response) => response.json())
+          .then((result) => {
+            console.log(result.data.items);
+            arr = result.data.items;
+            arr.forEach((element) => {
+              let searchresult = document.getElementById("searchresult");
+
+              let rescard = document.createElement("div");
+              rescard.className = "col-sm";
+
+              let card = document.createElement("div");
+              card.className = "card";
+              card.style = "width: 18rem";
+
+              let cardbody = document.createElement("div");
+              cardbody.className = "card-body";
+
+              let cardheading = document.createElement("h5");
+              cardheading.className = "card-title";
+              cardheading.innerHTML = element.title;
+
+              let cardsubtitle = document.createElement("h6");
+              cardsubtitle.className = "card-subtitle mb-2 text-muted";
+              cardsubtitle.innerHTML = "By: " + element.owner.display_name;
+
+              let anscount = document.createElement("a");
+              anscount.className = "card-link";
+              anscount.innerHTML = "Answer Count: " + element.answer_count;
+              anscount.href = element.link;
+
+              let anslink = document.createElement("a");
+              anslink.className = "card-link";
+              anslink.innerHTML = "View";
+              anslink.href = element.link;
+
+              cardbody.appendChild(cardheading);
+              cardbody.appendChild(cardsubtitle);
+              cardbody.appendChild(anscount);
+              cardbody.appendChild(anslink);
+              card.appendChild(cardbody);
+              rescard.appendChild(card);
+              searchresult.appendChild(rescard);
+              document
+                .getElementById("searchresultcontainer")
+                .scrollIntoView({ behavior: "smooth" });
+            });
+          })
+          .catch((error) => console.log("error", error));
+      });
+    </script>
+  </body>
+</html>
