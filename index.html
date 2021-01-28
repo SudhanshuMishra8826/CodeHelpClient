@@ -74,7 +74,7 @@
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         var urlencoded = new URLSearchParams();
-        urlencoded.append("term", data.get("term"));
+        urlencoded.append("q", data.get("term"));
 
         var requestOptions = {
           method: "POST",
@@ -82,7 +82,8 @@
           body: urlencoded,
           redirect: "follow",
         };
-
+        let searchr = document.getElementById("searchresult");
+        searchr.textContent = "";
         fetch("http://127.0.0.1:8000/search/", requestOptions)
           .then((response) => response.json())
           .then((result) => {

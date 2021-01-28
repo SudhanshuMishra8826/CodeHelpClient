@@ -238,7 +238,8 @@
           body: urlencoded,
           redirect: "follow",
         };
-
+        let searchr = document.getElementById("searchresult");
+        searchr.textContent = "";
         fetch("http://127.0.0.1:8000/search/complex", requestOptions)
           .then((response) => response.json())
           .then((result) => {
